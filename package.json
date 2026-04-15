@@ -6,7 +6,8 @@
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "register-commands": "node scripts/register-commands.js",
-    "migrate": "npx wrangler d1 execute 2xkordinator-db --file migrations/001_create_schema.sql && npx wrangler d1 execute 2xkordinator-db --file migrations/002_indexes.sql"
+    "migrate:local": "npx wrangler d1 migrations apply DB --local",
+    "migrate:remote": "npx wrangler d1 migrations apply DB --remote"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
