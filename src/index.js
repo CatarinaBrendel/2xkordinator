@@ -75,6 +75,7 @@ export default {
   },
 };
 
+// Per Discord Documentation
 async function verifyDiscordSignature(publicKeyHex, signatureHex, timestamp, bodyText) {
   const publicKey = hexToBytes(publicKeyHex);
   const signature = hexToBytes(signatureHex);
