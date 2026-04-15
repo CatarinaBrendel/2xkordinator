@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy"
+    "deploy": "wrangler deploy",
+    "register-commands": "node scripts/register-commands.js",
+    "migrate": "npx wrangler d1 execute 2xkordinator-db --file migrations/001_create_schema.sql && npx wrangler d1 execute 2xkordinator-db --file migrations/002_indexes.sql"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
@@ -12,5 +14,8 @@
   "main": "index.js",
   "author": "CBrendel",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
 }

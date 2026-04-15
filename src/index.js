@@ -8,6 +8,9 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import { verifyDiscordSignature } from "./discord/verify.js";
+import { handleInteraction } from "./discord/handleInteraction.js";
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -29,19 +32,12 @@ export default {
 
     const bodyText = await request.text();
 
-    console.log("Has signature:", !!signature);
-    console.log("Has timestamp:", !!timestamp);
-    console.log("Public key loaded:", !!env.DISCORD_PUBLIC_KEY);
-    console.log("Public key prefix:", env.DISCORD_PUBLIC_KEY?.slice(0, 8));
-
     const isValid = await verifyDiscordSignature(
       env.APP_PUBLIC_KEY.trim(),
       signature,
       timestamp,
       bodyText
     );
-
-    console.log("Signature valid:", isValid);
 
     if (!isValid) {
       return new Response("Bad request signature", { status: 401 });
@@ -54,62 +50,15 @@ export default {
       return new Response("Invalid JSON", { status: 400 });
     }
 
-    if (body.type === 1) {
-      return json({ type: 1 });
-    }
+    const result = await handleInteraction(body, env);
 
-    if (body.type === 2) {
-      const commandName = body.data?.name;
-
-      if (commandName === "ping") {
-        return json({
-          type: 4,
-          data: {
-            content: "Pong from GitHub deploy",
-          },
-        });
-      }
-
-      return json({
-        type: 4,
-        data: {
-          content: `Unknown command: ${commandName ?? "?"}`,
-        },
-      });
+    if (result && result.type) {
+      return json(result);
     }
 
     return json({ ok: true, body });
   },
 };
-
-// Per Discord Documentation
-async function verifyDiscordSignature(publicKeyHex, signatureHex, timestamp, bodyText) {
-  const publicKey = hexToBytes(publicKeyHex);
-  const signature = hexToBytes(signatureHex);
-  const message = new TextEncoder().encode(timestamp + bodyText);
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    publicKey,
-    "Ed25519",
-    false,
-    ["verify"]
-  );
-
-  return await crypto.subtle.verify("Ed25519", key, signature, message);
-}
-
-function hexToBytes(hex) {
-  if (!hex || hex.length % 2 !== 0) {
-    throw new Error("Invalid hex");
-  }
-
-  const bytes = new Uint8Array(hex.length / 2);
-  for (let i = 0; i < hex.length; i += 2) {
-    bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
-  }
-  return bytes;
-}
 
 function json(data, init = {}) {
   return new Response(JSON.stringify(data), {

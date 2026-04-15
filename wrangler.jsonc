@@ -1,6 +1,13 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "2xkordinator",
-  "main": "src/index.js",
-  "compatibility_date": "2026-04-15"
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "2xkordinator",
+	"main": "src/index.js",
+	"compatibility_date": "2026-04-15",
+	"d1_databases": [
+		{
+			"binding": "_2xkordinator_db",
+			"database_name": "2xkordinator-db",
+			"database_id": "1584ab1f-75e2-495e-8ddb-883ac6c40409"
+		}
+	]
 }
