@@ -29,12 +29,19 @@ export default {
 
     const bodyText = await request.text();
 
+    console.log("Has signature:", !!signature);
+    console.log("Has timestamp:", !!timestamp);
+    console.log("Public key loaded:", !!env.DISCORD_PUBLIC_KEY);
+    console.log("Public key prefix:", env.DISCORD_PUBLIC_KEY?.slice(0, 8));
+
     const isValid = await verifyDiscordSignature(
-      env.DISCORD_PUBLIC_KEY.trim(),
+      env.APP_PUBLIC_KEY.trim(),
       signature,
       timestamp,
       bodyText
     );
+
+    console.log("Signature valid:", isValid);
 
     if (!isValid) {
       return new Response("Bad request signature", { status: 401 });
