@@ -58,7 +58,7 @@ export default {
         return json({
           type: 4,
           data: {
-            content: "Pong!",
+            content: "Pong from GitHub deploy",
           },
         });
       }
