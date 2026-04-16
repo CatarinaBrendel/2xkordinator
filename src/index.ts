@@ -1,19 +1,9 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run "npm run dev" in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run "npm run deploy" to publish your worker
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
-
-import { verifyDiscordSignature } from "./discord/verify.js";
-import { handleInteraction } from "./discord/handleInteraction.js";
+import { verifyDiscordSignature } from "./discord/verify";
+import { handleInteraction } from "./discord/handleInteraction";
 
 export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+  async fetch(request: Request, env: any) {
+    const url = new URL((request as Request).url);
 
     if (url.pathname !== "/interactions") {
       return new Response("Not found", { status: 404 });
@@ -33,7 +23,7 @@ export default {
     const bodyText = await request.text();
 
     const isValid = await verifyDiscordSignature(
-      env.APP_PUBLIC_KEY.trim(),
+      (env.APP_PUBLIC_KEY || "").trim(),
       signature,
       timestamp,
       bodyText
@@ -43,7 +33,7 @@ export default {
       return new Response("Bad request signature", { status: 401 });
     }
 
-    let body;
+    let body: any;
     try {
       body = JSON.parse(bodyText);
     } catch {
@@ -60,7 +50,7 @@ export default {
   },
 };
 
-function json(data, init = {}) {
+function json(data: any, init: ResponseInit = {}) {
   return new Response(JSON.stringify(data), {
     ...init,
     headers: {

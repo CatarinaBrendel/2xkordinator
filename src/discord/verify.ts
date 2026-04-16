@@ -1,5 +1,5 @@
 // Utilities for verifying Discord request signatures (Ed25519)
-export async function verifyDiscordSignature(publicKeyHex, signatureHex, timestamp, bodyText) {
+export async function verifyDiscordSignature(publicKeyHex: string, signatureHex: string, timestamp: string, bodyText: string) {
   const publicKey = hexToBytes(publicKeyHex);
   const signature = hexToBytes(signatureHex);
   const message = new TextEncoder().encode(timestamp + bodyText);
@@ -15,7 +15,7 @@ export async function verifyDiscordSignature(publicKeyHex, signatureHex, timesta
   return await crypto.subtle.verify("Ed25519", key, signature, message);
 }
 
-function hexToBytes(hex) {
+function hexToBytes(hex: string) {
   if (!hex || hex.length % 2 !== 0) {
     throw new Error("Invalid hex");
   }

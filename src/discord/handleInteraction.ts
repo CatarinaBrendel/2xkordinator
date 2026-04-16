@@ -1,7 +1,7 @@
-import { pingCommand } from "./commands/ping.js";
-import { matchStatusCommand } from "./commands/matchStatus.js";
+import { pingCommand } from "./commands/ping";
+import { matchStatusCommand } from "./commands/matchStatus";
 
-export async function handleInteraction(body, env) {
+export async function handleInteraction(body: any, env: any) {
   if (!body || !body.type) return { ok: false };
 
   if (body.type === 1) {
