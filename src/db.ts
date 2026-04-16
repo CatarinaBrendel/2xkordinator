@@ -1,6 +1,6 @@
 // Lightweight D1 helper wrapper
 export function db(env: any) {
-  // Accept either the `DB` binding (wrangler.jsonc) or the older `_2xkordinator_db` name.
+  // Accept either the `DB` binding (wrangler.jsonc) or the older `_2xkordinator_db` name
   const botDB = env.DB ?? env._2xkordinator_db;
   if (!botDB) {
     const keys = Object.keys(env || {}).join(', ');
